@@ -372,6 +372,34 @@
     .order-summary { position:static; }
     footer { flex-direction:column;gap:1rem;text-align:center;padding:2.5rem 2rem; }
   }
+
+  /* ---- QR SECTION ---- */
+  .section-qr {
+    background: var(--mocha);
+    padding: 6rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .section-qr::before { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .section-qr::after { content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .qr-section-title { font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;color:var(--cream);margin-bottom:.6rem; }
+  .qr-section-sub { font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--foam);opacity:.55;margin-bottom:2.5rem; }
+  .qr-box {
+    display:inline-flex;flex-direction:column;align-items:center;gap:1.5rem;
+    background:rgba(245,237,216,.05);border:1px solid rgba(196,122,30,.25);
+    padding:2.5rem 3rem;
+  }
+  .qr-box-inner { background:white;padding:14px;border-radius:4px;display:inline-block; }
+  .qr-section-url { font-size:.7rem;letter-spacing:.12em;color:var(--gold);opacity:.75; }
+  .qr-section-hint { font-size:.65rem;color:var(--foam);opacity:.4;letter-spacing:.08em; }
+  .qr-dl-btn {
+    background:var(--gold);color:var(--espresso);border:none;
+    padding:.8rem 2rem;font-family:'Josefin Sans',sans-serif;
+    font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+    cursor:none;transition:background .2s;
+  }
+  .qr-dl-btn:hover { background:var(--caramel); }
 </style>
 </head>
 <body>
@@ -388,7 +416,7 @@
   <ul class="nav-links">
     <li><a href="#marca">Marca</a></li>
     <li><a href="#productos">Productos</a></li>
-    <li><a href="#pedido">Pedido</a></li>
+    <li><a href="#pedido">Pedido</a></li><li><a href="#qr">QR</a></li>
   </ul>
   <button class="nav-qr-btn" onclick="openQR()">📱 Ver QR</button>
 </nav>
@@ -509,6 +537,21 @@
 </section>
 
 <!-- FOOTER -->
+
+<!-- QR SECTION -->
+<section class="section-qr" id="qr">
+  <p class="section-label">Acceso Digital</p>
+  <h2 class="qr-section-title">Escanea & Visítanos</h2>
+  <p class="qr-section-sub">Apunta tu cámara al código para abrir la tienda</p>
+  <div class="qr-box">
+    <div class="qr-box-inner">
+      <div id="qrSectionCode"></div>
+    </div>
+    <div class="qr-section-url">wisena25.github.io/Moccaccino</div>
+    <div class="qr-section-hint">Escanea con la cámara de tu teléfono</div>
+    <button class="qr-dl-btn" onclick="downloadQRSection()">⬇ Descargar QR</button>
+  </div>
+</section>
 <footer>
   <div class="footer-left">
     <img class="footer-logo" id="footerLogoImg" alt="Moccaccino">
@@ -553,7 +596,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   renderProducts();
   renderCart();
-  generateQR();
+  generateQR(); generateQRSection();
   document.getElementById('discountInput').addEventListener('keydown', e => {
     if(e.key==='Enter') applyDiscount();
   });
@@ -721,6 +764,27 @@ function closeOrderModal(){
 
 // ---- QR ----
 let qrGenerated = false;
+function generateQRSection() {
+  const el = document.getElementById('qrSectionCode');
+  if(el && !el.hasChildNodes()) {
+    new QRCode(el, {
+      text: 'https://wisena25.github.io/Moccaccino/',
+      width: 200, height: 200,
+      colorDark: '#2C1200', colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }
+}
+function downloadQRSection() {
+  setTimeout(() => {
+    const canvas = document.querySelector('#qrSectionCode canvas');
+    if(!canvas) return;
+    const a = document.createElement('a');
+    a.download = 'moccaccino-qr.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }, 300);
+}
 function generateQR() {
   const url = 'https://wisena25.github.io/Moccaccino/';
   document.getElementById('qrUrl').textContent = url;
@@ -732,7 +796,7 @@ function generateQR() {
   });
   qrGenerated = true;
 }
-function openQR() { generateQR(); document.getElementById('qrModal').classList.add('active'); }
+function openQR() { generateQR(); generateQRSection(); document.getElementById('qrModal').classList.add('active'); }
 function closeQR() { document.getElementById('qrModal').classList.remove('active'); }
 function downloadQR() {
   const canvas = document.querySelector('#qrcode canvas');
