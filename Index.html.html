@@ -532,9 +532,9 @@
 <div class="modal-overlay" id="qrModal">
   <div class="qr-modal">
     <h2 class="qr-title">Código QR</h2>
-    <p class="qr-subtitle">Escanea para visitar esta página</p>
+    <p class="qr-subtitle">Escanea para visitar la tienda</p>
     <div id="qrcode"></div>
-    <div class="qr-url" id="qrUrl"></div>
+    <div class="qr-url" id="qrUrl">https://wisena25.github.io/Moccaccino/</div>
     <button class="qr-download" onclick="downloadQR()">⬇ Descargar QR</button>
     <button class="qr-close" onclick="closeQR()">Cerrar</button>
   </div>
@@ -722,7 +722,7 @@ function closeOrderModal(){
 // ---- QR ----
 let qrGenerated = false;
 function generateQR() {
-  const url = window.location.href || 'https://ponche-moccaccino.com';
+  const url = 'https://wisena25.github.io/Moccaccino/';
   document.getElementById('qrUrl').textContent = url;
   if(qrGenerated) return;
   new QRCode(document.getElementById('qrcode'), {
